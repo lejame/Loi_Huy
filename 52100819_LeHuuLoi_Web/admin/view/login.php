@@ -5,16 +5,23 @@
    include "../model/user.php";
 
    if((isset($_POST['login'])) && ($_POST['login'])){
-        $user = $_POST['logEmail'];
-        $pass = $_POST['logPassword'];
-        $role = checkuser($user,$pass);
-        $_SESSION["role"] = $role;
-        if($role == 1) header('location: admin.php');
-        else if($role == 0) header('location: home.html');
-        else{
-            $txt_error = "check Username and Password !";
-        }
+    $user = $_POST['logEmail'];
+    $pass = $_POST['logPassword'];
+    $kq = getuserinfo($user,$pass);
+    $role = $kq[0]['role'];
+    $_SESSION["role"] = $role;
+    $_SESSION["user"] = $kq[0]['username'];
+    $_SESSION["name"] = $kq[0]['name'];
+    if($role == 1) header('location: admin.php');
+    else if($role == 0) {
+        
+        header('location: home.php');
     }
+    
+    else{
+        $txt_error = "check Username and Password !";
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -27,19 +34,19 @@
     <title>Document</title>
     <style>
         body {
-            background-image: url('image/img_login2.jpg');
+            background-image:linear-gradient(to right,rgba(27,31,52,0.8),rgba(27,31,52,0.8)), url('image/bia.jpg');
             background-size: cover;
         }
     </style>
 </head>
 
 <body>
-<form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="post">
+    <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="post">
         <div class="container">
             <div class="box">
                 <!------------------ Login Box --------------------->
                 <div class="box-login" id="login">
-                    <i class="fas fa-times fa-right fa-lg" id="next"><a href="home.html"></a></i>
+                    <i class="fas fa-times fa-right fa-lg" id="next" onclick="exit()"></i>
                     <div class="top-header">
                         <h3>Welcome</h3>
                         <small>We are happy to have you back.</small>
@@ -47,7 +54,7 @@
                     <div class="input-group">
                         <div class="input-field">
                             <input type="text" class="input-box" id="logEmail" name="logEmail" required>
-                            <label for="logEmail">Email address</label>
+                            <label for="logEmail">Username</label>
                         </div>
                         <div class="input-field">
                             <input type="password" class="input-box" id="logPassword" name="logPassword" required>
@@ -74,6 +81,9 @@
                         <div class="forgot">
                             <a href="#">Forgot password?</a>
                         </div>
+                        <div class="forgot">
+                            <a href="register.php" style="text-decoration:none;">Do you create an account?</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -95,6 +105,9 @@
                 b.style.opacity = "1";
                 c.style.opacity = "0";
             }
+        }
+        function exit(){
+            window.location.href = "home.php";
         }
     </script>
 </body>
